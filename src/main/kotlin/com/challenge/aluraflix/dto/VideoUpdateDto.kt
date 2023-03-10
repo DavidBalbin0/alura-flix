@@ -20,5 +20,8 @@ data class VideoUpdateDto(
 
         @field:NotBlank(message = "A url nao pode estar vazio")
         @field:Size(min = 5, message = "A url deve ter mais de 5 caracteres")
-        val url: String
+        val url: String,
+
+        @field:NotBlank(message = "A Categoria nao pode estar vazio")
+        val categoriaId: Long
 )

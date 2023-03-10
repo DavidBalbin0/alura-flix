@@ -5,34 +5,45 @@ import com.challenge.aluraflix.dto.VideoUpdateDto
 import com.challenge.aluraflix.dto.VideoViewDto
 import com.challenge.aluraflix.exception.NotFoundException
 import com.challenge.aluraflix.mapper.VideoFormMapper
-import com.challenge.aluraflix.mapper.VideoWiewMapper
+import com.challenge.aluraflix.mapper.VideoViewMapper
 import com.challenge.aluraflix.model.Video
 import com.challenge.aluraflix.repository.VideoRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class VideoService (
         private val videoRepository: VideoRepository,
         private val videoFormMapper: VideoFormMapper,
-        private val videoViewMapper: VideoWiewMapper,
+        private val videoViewMapper: VideoViewMapper,
+        private val categoryService: CategoryService,
         private val notFoundMessage: String = "Video nao encontrado"
         ) {
 
-    fun getAll(): List<VideoViewDto> {
-        val videos = videoRepository.findAll()
-
-        return videos.map { v -> videoViewMapper.map(v) }
+    fun getAll(
+            title: String?,
+            pageable: Pageable): Page<VideoViewDto> {
+        println(title)
+        val videos = if (!title.isNullOrBlank()) {
+            videoRepository.findAllByTituloContainingIgnoreCase(title)
+        } else {
+            videoRepository.findAll(pageable)
+        }
+        return videos.map { videoViewMapper.map(it) }
     }
 
-    fun getBtId(id: Long): Video {
-        return videoRepository.findById(id)
+    fun getBtId(id: Long): VideoViewDto {
+        val video = videoRepository.findById(id)
                 .orElseThrow { NotFoundException(notFoundMessage) }
+        return videoViewMapper.map(video)
+
     }
 
     fun post(form: VideoFormDto, uriBuilder: UriComponentsBuilder): ResponseEntity<VideoViewDto>{
+        categoryService.verifyCategoryId(form.categoriaId)
         val video = videoFormMapper.map(form)
         videoRepository.save(video)
         val videoView = videoViewMapper.map(video)
@@ -53,6 +64,18 @@ class VideoService (
     fun delete(id: Long){
         if(videoRepository.existsById(id)) videoRepository.deleteById(id)
             else throw NotFoundException(notFoundMessage)
+    }
+
+    fun assignCategoryLivre(): List<VideoViewDto> {
+        val videos = videoRepository.findAllByCategoriaIdIsNull()
+        videos.map { v -> v.categoriaId = 1 }
+        videoRepository.saveAll(videos)
+        return videos.map { v -> videoViewMapper.map(v) }
+    }
+
+    fun getVideosByCategoryId(id: Long): List<VideoViewDto> {
+        val videos = videoRepository.findAllByCategoriaId(id)
+        return videos.map { v -> videoViewMapper.map(v) }
     }
 
 }

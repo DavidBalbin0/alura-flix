@@ -6,6 +6,9 @@ import com.challenge.aluraflix.dto.VideoViewDto
 import com.challenge.aluraflix.model.Video
 import com.challenge.aluraflix.service.VideoService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
@@ -15,11 +18,14 @@ import org.springframework.web.util.UriComponentsBuilder
 class VideoController(private val videoService: VideoService) {
 
     @GetMapping("/getall")
-    fun getVideos(): List<VideoViewDto>{
-        return videoService.getAll()
+    fun getVideos(
+            @RequestParam(required = false, name = "titulo") title: String?,
+            @PageableDefault(size = 5, sort = ["id"]) pageable: Pageable):
+            Page<VideoViewDto>{
+        return videoService.getAll(title, pageable)
     }
     @GetMapping("/getById/{id}")
-    fun getVideoById(@PathVariable id: Long): Video{
+    fun getVideoById(@PathVariable id: Long): VideoViewDto{
         return videoService.getBtId(id)
     }
     @PostMapping("/post")
@@ -35,5 +41,9 @@ class VideoController(private val videoService: VideoService) {
     @DeleteMapping("/delete/{id}")
     fun delete(@PathVariable id: Long){
         videoService.delete(id)
+    }
+    @GetMapping("/assigncategory")
+    fun assignCategoryLivreToVideo(): List<VideoViewDto>{
+        return videoService.assignCategoryLivre()
     }
 }

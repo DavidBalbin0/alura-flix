@@ -10,7 +10,8 @@ class VideoFormMapper: Mapper<VideoFormDto, Video> {
         return Video(
                 titulo = t.titulo,
                 descricao = t.descricao,
-                url = t.url
+                url = t.url,
+                categoriaId = t.categoriaId
         )
     }
 }
