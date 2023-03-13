@@ -21,11 +21,11 @@ class VideoController(private val videoService: VideoService) {
     fun getVideos(
             @RequestParam(required = false, name = "titulo") title: String?,
             @PageableDefault(size = 5, sort = ["id"]) pageable: Pageable):
-            Page<VideoViewDto>{
+            ResponseEntity<Page<VideoViewDto>>{
         return videoService.getAll(title, pageable)
     }
     @GetMapping("/getById/{id}")
-    fun getVideoById(@PathVariable id: Long): VideoViewDto{
+    fun getVideoById(@PathVariable id: Long): ResponseEntity<VideoViewDto>{
         return videoService.getBtId(id)
     }
     @PostMapping("/post")
@@ -39,8 +39,9 @@ class VideoController(private val videoService: VideoService) {
     }
 
     @DeleteMapping("/delete/{id}")
-    fun delete(@PathVariable id: Long){
+    fun delete(@PathVariable id: Long): ResponseEntity<Void> {
         videoService.delete(id)
+        return ResponseEntity.noContent().build()
     }
     @GetMapping("/assigncategory")
     fun assignCategoryLivreToVideo(): List<VideoViewDto>{

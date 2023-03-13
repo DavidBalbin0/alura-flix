@@ -25,20 +25,20 @@ class VideoService (
 
     fun getAll(
             title: String?,
-            pageable: Pageable): Page<VideoViewDto> {
+            pageable: Pageable): ResponseEntity<Page<VideoViewDto>> {
         println(title)
         val videos = if (!title.isNullOrBlank()) {
-            videoRepository.findAllByTituloContainingIgnoreCase(title)
+            videoRepository.findAllByTituloContainingIgnoreCase(title, pageable)
         } else {
             videoRepository.findAll(pageable)
         }
-        return videos.map { videoViewMapper.map(it) }
+        return ResponseEntity.ok(videos.map { videoViewMapper.map(it) })
     }
 
-    fun getBtId(id: Long): VideoViewDto {
+    fun getBtId(id: Long): ResponseEntity<VideoViewDto> {
         val video = videoRepository.findById(id)
                 .orElseThrow { NotFoundException(notFoundMessage) }
-        return videoViewMapper.map(video)
+        return ResponseEntity.ok(videoViewMapper.map(video))
 
     }
 
