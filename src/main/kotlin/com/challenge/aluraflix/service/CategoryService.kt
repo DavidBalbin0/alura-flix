@@ -4,10 +4,8 @@ import com.challenge.aluraflix.dto.*
 import com.challenge.aluraflix.exception.NotFoundException
 import com.challenge.aluraflix.mapper.CategoryFormMapper
 import com.challenge.aluraflix.mapper.CategoryViewMapper
-import com.challenge.aluraflix.mapper.VideoViewMapper
 import com.challenge.aluraflix.model.Category
 import com.challenge.aluraflix.repository.CategoryRepository
-import com.challenge.aluraflix.repository.VideoRepository
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -73,4 +71,5 @@ class CategoryService(
         verifyCategoryId(id)
         return videoService.getVideosByCategoryId(id)
     }
+
 }

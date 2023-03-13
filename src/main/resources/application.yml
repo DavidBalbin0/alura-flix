@@ -9,3 +9,5 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+aluraflix_secret: ${JWT_SECRET:secret}

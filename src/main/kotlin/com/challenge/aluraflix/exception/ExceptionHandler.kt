@@ -3,11 +3,10 @@ package com.challenge.aluraflix.exception
 import com.challenge.aluraflix.dto.ErrorView
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
+import org.springframework.web.ErrorResponse
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class ExceptionHandler {
@@ -54,6 +53,18 @@ class ExceptionHandler {
                 status = HttpStatus.BAD_REQUEST.value(),
                 error = HttpStatus.BAD_REQUEST.name,
                 message = errorMessage.toString(),
+                path = request.servletPath
+        )
+    }
+
+    @ExceptionHandler(AccessDeniedException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    fun handleAccessDeniedException(exception: AccessDeniedException, request: HttpServletRequest): ErrorView {
+        return ErrorView(
+                status = HttpStatus.FORBIDDEN.value(),
+                error = HttpStatus.BAD_REQUEST.name,
+                message = exception.message,
                 path = request.servletPath
         )
     }

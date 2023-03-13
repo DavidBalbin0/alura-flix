@@ -7,6 +7,7 @@ import com.challenge.aluraflix.exception.NotFoundException
 import com.challenge.aluraflix.mapper.VideoFormMapper
 import com.challenge.aluraflix.mapper.VideoViewMapper
 import com.challenge.aluraflix.model.Video
+import com.challenge.aluraflix.repository.CategoryRepository
 import com.challenge.aluraflix.repository.VideoRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -20,6 +21,7 @@ class VideoService (
         private val videoFormMapper: VideoFormMapper,
         private val videoViewMapper: VideoViewMapper,
         private val categoryService: CategoryService,
+        private val categoryRepository: CategoryRepository,
         private val notFoundMessage: String = "Video nao encontrado"
         ) {
 
@@ -75,6 +77,14 @@ class VideoService (
 
     fun getVideosByCategoryId(id: Long): List<VideoViewDto> {
         val videos = videoRepository.findAllByCategoriaId(id)
+        return videos.map { v -> videoViewMapper.map(v) }
+    }
+
+    fun getFree(): List<VideoViewDto>{
+        val idCategoria = categoryRepository.findByTituloIgnoreCase("livre").id
+                ?: throw NotFoundException("Categoria nao encotrada")
+        val videos = videoRepository.findAllByCategoriaId(idCategoria)
+        println(videos)
         return videos.map { v -> videoViewMapper.map(v) }
     }
 

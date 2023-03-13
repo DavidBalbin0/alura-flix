@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CategoryRepository : JpaRepository<Category, Long> {
     fun findAllByTituloContainingIgnoreCase(nameCategory: String, pageable: Pageable): Page<Category>
+
+    fun findByTituloIgnoreCase(nameCategory: String): Category
 }

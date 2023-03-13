@@ -28,6 +28,11 @@ class VideoController(private val videoService: VideoService) {
     fun getVideoById(@PathVariable id: Long): ResponseEntity<VideoViewDto>{
         return videoService.getBtId(id)
     }
+    @GetMapping("/free")
+    fun getFree(): List<VideoViewDto>{
+        println("getfree")
+        return videoService.getFree()
+    }
     @PostMapping("/post")
     fun postVideo(@Valid @RequestBody form: VideoFormDto, uriBuilder: UriComponentsBuilder): ResponseEntity<VideoViewDto>{
         return videoService.post(form, uriBuilder)
