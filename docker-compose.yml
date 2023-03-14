@@ -1,8 +1,14 @@
 version: '3.9'
 
+networks:
+  production-network:
+    driver:
+      bridge
+
 services:
   db:
     image: postgres:15
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: balbino
@@ -12,3 +18,24 @@ services:
       - ./data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - production-network
+
+  api:
+    build: .
+#    network_mode: "host"
+    container_name: alura-flix-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+        - "SPRING_PROFILES_ACTIVE=prod"
+        - "DATASOURCE_URL=jdbc:postgresql://postgres:5432/aluraflix"
+        - "DATASOURCE_USERNAME=balbino"
+        - "DATASOURCE_PASSWORD=balbino"
+
+    networks:
+      - production-network
+volumes:
+  postgres-data:
