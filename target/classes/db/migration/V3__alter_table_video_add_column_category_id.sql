@@ -1,0 +1,1 @@
+ALTER TABLE video ADD COLUMN categoria_id BIGINT REFERENCES category(id);
