@@ -5,6 +5,7 @@ import com.challenge.aluraflix.dto.VideoUpdateDto
 import com.challenge.aluraflix.dto.VideoViewDto
 import com.challenge.aluraflix.model.Video
 import com.challenge.aluraflix.service.VideoService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RequestMapping("/video")
 @RestController
+@SecurityRequirement(name = "bearer-key")
 class VideoController(private val videoService: VideoService) {
 
     @GetMapping("/getall")

@@ -2,6 +2,7 @@ package com.challenge.aluraflix.controller
 
 import com.challenge.aluraflix.dto.*
 import com.challenge.aluraflix.service.CategoryService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -12,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/category")
+@SecurityRequirement(name = "bearer-key")
 class CategoryController(
         private val categoryService: CategoryService
 ) {
