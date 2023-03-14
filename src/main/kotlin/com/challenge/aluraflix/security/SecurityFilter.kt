@@ -19,16 +19,11 @@ class SecurityFilter(
 
         val tokenJWT = getToken(request)
         if (tokenJWT != null){
-            println("entrando no if do filter")
             val subject = tokenService.getSubject(tokenJWT)
-            println(subject)
             val user  =  userRepository.findByUsername(subject)
             val authentication = UsernamePasswordAuthenticationToken(user, null, user.authorities)
             SecurityContextHolder.getContext().authentication = authentication
         }
-
-        println(tokenJWT)
-
         filterChain.doFilter(request, response)
     }
 
